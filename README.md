@@ -1,49 +1,49 @@
-# Shashank Kumar — Build. Design. Ship.
+# Shashank Kumar — Systems in Bloom
 
-A personal engineering portfolio with a dark editorial visual system, lime modular navigation transitions, an interactive project film, layered journey cards and a project index.
+A personal engineering portfolio built as one standalone HTML page. It brings together a point-cloud companion, a tactile fabric interaction, a generative flower valley, project case studies, and a customisable Semi pet.
 
-## Live site
+## Live portfolio
 
 https://shashank-systems-room.onrender.com
 
-## Experience
+## Visual journey
 
-- Fixed, responsive navigation with a staggered full-screen lime tile transition.
-- Oversized editorial hero and abstract monogram artwork.
-- Three-part BUILD / DESIGN / SHIP manifesto.
-- Featured project stage with selectable project cards and UI simulations.
-- Timed project-film modal with play/pause, previous/next and progress controls.
-- Scrolling project-name rail and additional public-repository index.
-- Contrasting light About section, layered Journey cards and categorized technology groups.
-- Custom cursor ring on fine pointers, contextual hover states and responsive touch fallback.
-- Keyboard focus states and reduced-motion support.
+1. **Point-cloud introduction** — a small procedural Three.js companion named Semi assembles from 4,800 generated particles. The progress ring measures local particle generation, not a remote model download. Pointer movement steers the light and gently turns the particle group.
+2. **Selected builds** — MitraCare, SettleGraph 0.6, Rootline Omni and TraceFuse, plus an index of additional public repositories. Project mockups are labelled illustrative, not live product screenshots.
+3. **Pull the thread** — a custom canvas-based Verlet fabric study with a portfolio-specific holographic graphic. It can be grabbed and tugged with a pointer or touch.
+4. **Flower valley** — an original procedural 2.5D canvas environment with perspective, bloom sprites, depth fog, cursor response and scroll-driven travel. Optional ambient audio is generated with Web Audio; no third-party soundtrack or copied Gladeye engine is used.
+5. **About / toolkit** — education, approach and tools shown in the public projects.
+6. **Semi capsule ending** — customisable companion with shape, material, colour, mood and follow settings, plus an interactive capsule dispenser.
 
 ## Featured projects
 
-| Project | Focus | Source |
+| Project | Focus | Source / demo |
 |---|---|---|
-| MitraCare | Shared elder-care and medication coordination | https://github.com/shashankkumar8/MitraCare |
-| SettleGraph 0.6 | Merchant settlement reconciliation and evidence investigation | https://github.com/shashankkumar8/SettleGraph |
-| Rootline Omni | FalkorDB-powered graph incident investigation | https://github.com/shashankkumar8/ROOTLINE-OMNI |
-| TraceFuse | Explainable multi-hop financial investigation | https://github.com/shashankkumar8/Tracefuse |
+| MitraCare | Shared elder-care and medication coordination | [Source](https://github.com/shashankkumar8/MitraCare) · [Live app](https://mitracare-api-shashank-k8r3-cfr0.onrender.com) |
+| SettleGraph 0.6 | Merchant settlement reconciliation and evidence investigation | [Source](https://github.com/shashankkumar8/SettleGraph) · [Live app](https://settlegraph-frontend-shashank.onrender.com) |
+| Rootline Omni | Graph-powered incident investigation with FalkorDB | [Source](https://github.com/shashankkumar8/ROOTLINE-OMNI) |
+| TraceFuse | Explainable multi-hop financial-crime pattern investigation | [Source](https://github.com/shashankkumar8/Tracefuse) |
 
-Additional repository index: RAG AI Agent, ScholarRAG, GraphProbe-X, GuardianShield CLI, BidSentry-E, Carbon Footprint Platform and PHOTON OS '06.
+Additional projects linked in the page include RAG AI Agent, ScholarRAG, GraphProbe-X, GuardianShield CLI, BidSentry-E and PHOTON OS '06.
 
-## Visual evidence and accuracy
+## Technical implementation
 
-The MitraCare preview uses a real screenshot from the project. Other project previews are illustrative browser mockups created for this portfolio, not screenshots of the live products or live telemetry. The project-film is generated in the browser from those scenes; it is not a prerecorded video.
+- One `index.html`; no build system, package installation or server API required.
+- Three.js 0.170.0 loaded from jsDelivr for the point-cloud companion, with a CSS fallback if WebGL/Three.js is unavailable.
+- Canvas 2D for the cloth physics and flower valley.
+- Web Audio API for user-enabled ambient tones; audio starts muted.
+- Google Fonts: DM Sans, DM Mono, DM Serif Display, Space Grotesk and Antonio.
+- Responsive CSS, visible focus states, reduced-motion support, and section navigation.
 
-Descriptions and technologies are based on the public repositories. No employment, internship, client, award, user-count, revenue or performance claims are invented. The public GitHub repository count is a snapshot and can change.
+## Run locally
 
-## Local run
-
-No build step or package dependencies are required. Open `index.html` directly or run:
+Open `index.html` directly, or start a static server:
 
 ```bash
 python -m http.server 8080
 ```
 
-Then visit http://localhost:8080.
+Then open http://127.0.0.1:8080.
 
 ## Render Static Site
 
@@ -52,6 +52,15 @@ Then visit http://localhost:8080.
 - Build command: `echo "Static portfolio — no build step required"`
 - Publish directory: `.`
 
-## Originality
+## Accuracy and boundaries
 
-The supplied portfolio video informed the structure and interaction language: framed hero, BUILD manifesto, featured work stage, project ticker, skill statement, light About section, layered Journey cards, tool groups, typographic interlude, proof and contact. The design, code, copy and project presentation were independently created for Shashank Kumar. Reference source code, branding, portrait and proprietary assets are not reused.
+- The Semi particle scene is generated procedurally. It is not a scan or portrait of a real person.
+- The cloth study is an original, simplified 2D Verlet simulation, not the supplied third-party WebGL implementation.
+- The flower valley is an original 2.5D canvas recreation of the interaction idea, not the licensed Gladeye scene or its compiled engine.
+- MitraCare and SettleGraph have hosted demos. The project preview cards are illustrative dashboard mockups; they are not screenshots of those live systems.
+- Rootline Omni and TraceFuse are prototypes built around synthetic data. Their pages do not claim production incident or banking integrations.
+- No internships, jobs, client relationships, awards, user counts, revenue or unverified performance metrics are claimed.
+
+## Design references
+
+The supplied prompts and screenshots informed the interaction vocabulary: dot-cloud assembly, a draggable iridescent fabric, a generative night garden, and a warm footer with a small companion customiser. The code, copy, companion art, cloth graphic and valley scene in this repository are independently implemented for Shashank Kumar; reference sites' proprietary code, models, textures, music and logos are not reused.
