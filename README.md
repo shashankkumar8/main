@@ -49,7 +49,7 @@ The capsule dispenser triggers a small mechanical animation and gives Semi a new
 | **Rootline Omni** | FalkorDB-powered graph incident investigation, evidence ranking and isolated graph simulations | https://github.com/shashankkumar8/ROOTLINE-OMNI |
 | **TraceFuse** | Explainable multi-hop financial-pattern investigation | https://github.com/shashankkumar8/Tracefuse |
 
-The repository index also links ScholarRAG, GraphProbe-X, GuardianShield CLI, BidSentry-E and PHOTON OS '06. RAG AI Agent has been removed from this portfolio.
+The repository index also links ScholarRAG, GraphProbe-X, GuardianShield CLI, BidSentry-E and PHOTON OS '06.
 
 ## Honesty and boundaries
 
