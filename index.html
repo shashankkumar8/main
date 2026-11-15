@@ -462,17 +462,19 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.wipe{display:none}.hero-glyph{transform:none}}
   
     /* Custom interactive cursor — desktop only; touch keeps native pointer behaviour. */
-    /* A restrained lime cursor: small core, quiet tracking ring, no labels or oversized hover blob. */
-    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .16s ease}
+    /* Custom arrow cursor: readable silhouette, subtle hover response, no ring. */
+    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .12s ease}
     .pointer-cursor.visible{opacity:1}
-    .pointer-cursor .cursor-core{position:absolute;left:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 5px rgba(199,255,61,.25);transform:translate3d(-50%,-50%,0)}
-    .pointer-cursor .cursor-ring{position:absolute;left:0;top:0;width:25px;height:25px;border:1px solid rgba(199,255,61,.52);border-radius:50%;background:transparent;transform:translate3d(-50%,-50%,0);transition:width .2s ease,height .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease;opacity:.88}
-    .pointer-cursor.hot .cursor-ring{width:34px;height:34px;border-color:rgba(199,255,61,.9);background:rgba(199,255,61,.055);opacity:1}
-    .pointer-cursor.down .cursor-ring{width:18px;height:18px;background:rgba(199,255,61,.12)}
-    .pointer-cursor .cursor-label{display:none}
+    .pointer-cursor .cursor-arrow{position:absolute;left:0;top:0;width:23px;height:30px;overflow:visible;transform:translate(-2px,-2px);transform-origin:4px 4px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));transition:transform .16s ease,filter .16s ease}
+    .pointer-cursor .cursor-arrow path{fill:var(--cream);stroke:#171913;stroke-width:1.35;stroke-linejoin:round}
+    .pointer-cursor.hot .cursor-arrow{transform:translate(-2px,-2px) rotate(-5deg) scale(1.08);filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+    .pointer-cursor.hot .cursor-arrow path{fill:var(--lime);stroke:#171913}
+    .pointer-cursor.down .cursor-arrow{transform:translate(-2px,-2px) scale(.88)}
+    .pointer-cursor .cursor-spark{position:absolute;left:14px;top:19px;width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px rgba(199,255,61,.65);opacity:.9;transition:transform .16s ease,opacity .16s ease}
+    .pointer-cursor.hot .cursor-spark{transform:translate(4px,-4px) scale(1.25);opacity:1}
     @media (hover:hover) and (pointer:fine){html.has-custom-cursor,html.has-custom-cursor *{cursor:none!important}html.has-custom-cursor input,html.has-custom-cursor textarea,html.has-custom-cursor [contenteditable="true"]{cursor:text!important}}
     @media (hover:none),(pointer:coarse){.pointer-cursor{display:none!important}}
-    @media (prefers-reduced-motion:reduce){.pointer-cursor,.pointer-cursor .cursor-ring{transition:none}}
+    @media (prefers-reduced-motion:reduce){.pointer-cursor,.pointer-cursor .cursor-arrow,.pointer-cursor .cursor-spark{transition:none}}
 
   </style>
 </head>
@@ -662,36 +664,27 @@
     <div class="case-links" id="caseLinks"></div>
   </dialog>
 
-  <div class="pointer-cursor" id="pointerCursor" aria-hidden="true"><span class="cursor-ring" id="cursorRing"></span><span class="cursor-core" id="cursorCore"></span></div>
+  <div class="pointer-cursor" id="pointerCursor" aria-hidden="true"><svg class="cursor-arrow" id="cursorArrow" viewBox="0 0 24 32"><path d="M2 1.5 21.5 20l-8.2.7-4.2 8.1L2 1.5Z"/></svg><span class="cursor-spark"></span></div>
 
   <script>
     (() => {
       'use strict';
       const $ = (selector, root=document) => root.querySelector(selector);
-      const $ = (selector, root=document) => [...root.querySelectorAll(selector)];
+      const all = (selector, root=document) => [...root.querySelectorAll(selector)];
       const panels = $('.panel');
 
-      // Custom cursor runs only while moving; a restrained follower avoids a permanent animation loop.
-      const cursorUI=$('#pointerCursor'),cursorRing=$('#cursorRing'),cursorCore=$('#cursorCore');
+      // Direct-follow custom arrow: visible on fine pointers, native cursor retained on touch.
+      const cursorUI=$('#pointerCursor'),cursorArrow=$('#cursorArrow');
       const finePointer=window.matchMedia('(hover:hover) and (pointer:fine)');
-      let pointer={x:0,y:0},ringPoint={x:0,y:0},cursorFrame=0;
-      function moveCursorRing(){
-        cursorFrame=0;
-        ringPoint.x+=(pointer.x-ringPoint.x)*.22;
-        ringPoint.y+=(pointer.y-ringPoint.y)*.22;
-        cursorRing.style.transform='translate3d('+ringPoint.x+'px,'+ringPoint.y+'px,0) translate3d(-50%,-50%,0)';
-        if(Math.abs(pointer.x-ringPoint.x)>.3||Math.abs(pointer.y-ringPoint.y)>.3)cursorFrame=requestAnimationFrame(moveCursorRing);
-      }
       if(finePointer.matches){
         document.documentElement.classList.add('has-custom-cursor');
         window.addEventListener('pointermove',event=>{
           if(event.pointerType==='touch')return;
-          pointer.x=event.clientX;pointer.y=event.clientY;
-          cursorCore.style.transform='translate3d('+pointer.x+'px,'+pointer.y+'px,0) translate3d(-50%,-50%,0)';
+          cursorArrow.style.left=event.clientX+'px';
+          cursorArrow.style.top=event.clientY+'px';
           cursorUI.classList.add('visible');
-          const target=event.target.closest('a,button,[role="button"],.project-window,.index-row');
+          const target=event.target&&event.target.closest?event.target.closest('a,button,[role="button"],.project-window,.index-row'):null;
           cursorUI.classList.toggle('hot',!!target);
-          if(!cursorFrame)cursorFrame=requestAnimationFrame(moveCursorRing);
         },{passive:true});
         window.addEventListener('pointerdown',()=>cursorUI.classList.add('down'),{passive:true});
         window.addEventListener('pointerup',()=>cursorUI.classList.remove('down'),{passive:true});
@@ -717,11 +710,11 @@
         wipe.appendChild(tile);
       }
       function updateNav() {
-        $$('.navlinks [data-go], .mobile-nav-pop [data-go]').forEach(btn => {
+        all('.navlinks [data-go], .mobile-nav-pop [data-go]').forEach(btn => {
           const dest=Number(btn.dataset.go);
           if (dest===active) btn.setAttribute('aria-current','page'); else btn.removeAttribute('aria-current');
         });
-        $$('.step-dots [data-go]').forEach(btn => {
+        all('.step-dots [data-go]').forEach(btn => {
           const yes=Number(btn.dataset.go)===active;
           btn.classList.toggle('active',yes);
           if(yes)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
@@ -754,7 +747,7 @@
           window.setTimeout(()=>{wipe.classList.remove('reveal');moving=false;},650);
         },680);
       }
-      $$('[data-go]').forEach(el=>el.addEventListener('click',event=>{if(el.tagName==='A')event.preventDefault();goTo(el.dataset.go);}));
+      all('[data-go]').forEach(el=>el.addEventListener('click',event=>{if(el.tagName==='A')event.preventDefault();goTo(el.dataset.go);}));
       $('#prevPanel').addEventListener('click',()=>goTo(active-1));
       $('#nextPanel').addEventListener('click',()=>goTo(active+1));
       window.addEventListener('keydown',event=>{
@@ -764,16 +757,27 @@
         if(event.key==='Home'){event.preventDefault();goTo(0);}
         if(event.key==='End'){event.preventDefault();goTo(panels.length-1);}
       });
-      viewport.addEventListener('wheel',event=>{
-        if($('#semiDialog').open||$('#caseDialog').open||moving)return;
+      // Capture wheel and trackpad events even when the pointer sits over fixed navigation.
+      let wheelDirection=0;
+      window.addEventListener('wheel',event=>{
+        const target=event.target&&event.target.closest?event.target.closest('dialog[open],input,textarea,select,[contenteditable="true"]'):null;
+        if(target||$('#semiDialog').open||$('#caseDialog').open)return;
         const primary=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;
-        if(Math.abs(primary)<3)return;
+        if(Math.abs(primary)<1)return;
         event.preventDefault();
+        const direction=Math.sign(primary);
+        if(direction!==wheelDirection){wheelSum=0;wheelDirection=direction;}
+        if(moving){wheelSum=0;return;}
         wheelSum+=primary;
         clearTimeout(wheelTimer);
-        wheelTimer=setTimeout(()=>wheelSum=0,180);
-        if(Math.abs(wheelSum)>48){goTo(active+(wheelSum>0?1:-1));wheelSum=0;}
-      },{passive:false});
+        wheelTimer=setTimeout(()=>{wheelSum=0;wheelDirection=0;},280);
+        const threshold=Math.abs(primary)>48?28:34;
+        if(Math.abs(wheelSum)>=threshold){
+          const step=wheelDirection>0?1:-1;
+          wheelSum=0;
+          goTo(active+step);
+        }
+      },{passive:false,capture:true});
       viewport.addEventListener('pointerdown',event=>{if(event.pointerType==='touch' && !event.target.closest('button,a'))touchStart={x:event.clientX,y:event.clientY};});
       viewport.addEventListener('pointerup',event=>{
         if(!touchStart)return;
@@ -802,7 +806,7 @@
       let currentProject='mitracare';
       function renderProject(key){
         const p=projects[key];if(!p)return;currentProject=key;
-        $$('.project-tab').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.project===key)));
+        all('.project-tab').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.project===key)));
         $('#windowAddress').textContent=p.address;$('#previewBrand').textContent=p.brand;$('#previewTag').textContent=p.tag;$('#previewTitle').innerHTML=p.previewTitle;$('#previewSub').textContent=p.previewSub;
         $('#previewFootLeft').textContent=p.left;$('#previewFootRight').textContent=p.right;$('#projectTitle').textContent=p.title;$('#projectDescription').textContent=p.description;$('#projectStack').textContent=p.stack.join(' · ');$('#previewScreen').dataset.project=key;
         $('#previewMetrics').innerHTML=p.metrics.map(([label,value])=>`<div class="preview-metric">${label}<strong>${value}</strong></div>`).join('');
@@ -810,7 +814,7 @@
         $('#previewNodes').hidden=key!=='rootline'&&key!=='tracefuse';
         $('#openCase').setAttribute('aria-label',`Open ${p.title} case study`);
       }
-      $$('.project-tab').forEach(btn=>btn.addEventListener('click',()=>renderProject(btn.dataset.project)));
+      all('.project-tab').forEach(btn=>btn.addEventListener('click',()=>renderProject(btn.dataset.project)));
       renderProject('mitracare');
       const caseDialog=$('#caseDialog');
       function openCase(){const p=projects[currentProject];$('#caseKicker').textContent=`PROJECT / ${Object.keys(projects).indexOf(currentProject)+1}`;$('#caseTitle').textContent=p.title;$('#caseIntro').textContent=p.description;$('#caseStack').innerHTML=p.stack.map(t=>`<span>${t}</span>`).join('');$('#caseProblem').textContent=p.problem;$('#caseBoundary').textContent=p.boundary;$('#caseLinks').innerHTML=`<a class="button button-lime" href="${p.repo}" target="_blank" rel="noopener noreferrer">View source ↗</a>${p.live?`<a class="button button-dark" href="${p.live}" target="_blank" rel="noopener noreferrer">Open live project ↗</a>`:''}`;document.body.classList.add('case-open');caseDialog.showModal();}
@@ -838,7 +842,7 @@
         ['#semiFloat','#semiDialog'].forEach(sel=>{const el=$(sel);Object.entries(semi).forEach(([key,val])=>el.dataset[key]=String(val));});
         $('#semiFloat').style.setProperty('--semi-color',color);$('#semiDialog').style.setProperty('--semi-color',color);
         $('#semiFollow').setAttribute('aria-checked',String(semi.follow));
-        $$('[data-setting]').forEach(group=>$$('.choice',group).forEach(btn=>btn.setAttribute('aria-pressed',String(semi[group.dataset.setting]===btn.dataset.value))));
+        all('[data-setting]').forEach(group=>all('.choice',group).forEach(btn=>btn.setAttribute('aria-pressed',String(semi[group.dataset.setting]===btn.dataset.value))));
         try{localStorage.setItem('shashank-semi',JSON.stringify(semi));}catch(_e){}
       }
       syncSemi();
@@ -848,7 +852,7 @@
       $('#closeSemi').addEventListener('click',()=>semiDialog.close());semiDialog.addEventListener('close',()=>{document.body.classList.remove('semi-open');semiTarget=null;});
       semiDialog.addEventListener('click',event=>{if(event.target===semiDialog)semiDialog.close();});
       $('#semiFollow').addEventListener('click',()=>{semi.follow=!semi.follow;if(!semi.follow){clearSemiFollow();semiPosition=null;semiTarget=null;}syncSemi();});
-      $$('[data-setting]').forEach(group=>group.addEventListener('click',event=>{const btn=event.target.closest('.choice');if(!btn)return;const key=group.dataset.setting;semi[key]=btn.dataset.value;syncSemi();}));
+      all('[data-setting]').forEach(group=>group.addEventListener('click',event=>{const btn=event.target.closest('.choice');if(!btn)return;const key=group.dataset.setting;semi[key]=btn.dataset.value;syncSemi();}));
       $('#surpriseSemi').addEventListener('click',()=>{
         const keys=Object.keys(palette),shapes=['round','clover','flower','square'],materials=['fabric','glass','glow','plastic'],moods=['idle','working','sleeping','surprise'];
         semi.shape=shapes[Math.floor(Math.random()*shapes.length)];semi.material=materials[Math.floor(Math.random()*materials.length)];semi.colour=keys[Math.floor(Math.random()*keys.length)];semi.mood=moods[Math.floor(Math.random()*moods.length)];syncSemi();
