@@ -44,24 +44,23 @@ const server = http.createServer((req, res) => {
       throw new Error('Custom arrow did not appear at the pointer: ' + JSON.stringify(cursor));
     }
 
-    // Dispatch a wheel gesture over the fixed header to prove capture-phase navigation works there.
-    await page.locator('.topbar').dispatchEvent('wheel', {
-      deltaY: 120, deltaX: 0, bubbles: true, cancelable: true
-    });
-    await page.waitForTimeout(1500);
+    // Use a real Chromium wheel input over the fixed header, not a synthetic DOM Event.
+    await page.mouse.move(720, 38);
+    await page.mouse.wheel(0, 120);
+    await page.waitForTimeout(1600);
     const afterWheel = await page.evaluate(() => ({
       transform: getComputedStyle(document.querySelector('#track')).transform,
       current: document.querySelector('#currentSection').textContent
     }));
     if (afterWheel.current !== 'Build') {
-      throw new Error('Wheel navigation did not advance from Home to Build: ' + JSON.stringify(afterWheel));
+      throw new Error('Real mouse wheel did not advance from Home to Build: ' + JSON.stringify(afterWheel) + '; browser errors: ' + pageErrors.join(' | '));
     }
 
     // Keyboard navigation must continue to work after the wheel gesture.
     await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(1500);
     const afterKeyboard = await page.locator('#currentSection').textContent();
-    if (afterKeyboard !== 'Work') throw new Error('ArrowRight did not navigate to Work: ' + afterKeyboard);
+    if (afterKeyboard !== 'Work') throw new Error('ArrowRight did not navigate to Work: ' + afterKeyboard + '; browser errors: ' + pageErrors.join(' | '));
 
     if (pageErrors.length) throw new Error('Browser runtime errors: ' + pageErrors.join(' | '));
     console.log('PASS: custom cursor, wheel over fixed header, keyboard navigation, no page errors.');
