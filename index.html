@@ -462,16 +462,16 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.wipe{display:none}.hero-glyph{transform:none}}
   
     /* Custom interactive cursor — desktop only; touch keeps native pointer behaviour. */
-    /* Custom arrow cursor: readable silhouette, subtle hover response, no ring. */
-    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .12s ease}
+    /* A compact custom arrow. The native cursor stays visible until this pointer is positioned. */
+    .pointer-cursor{position:fixed;left:0;top:0;width:24px;height:32px;z-index:120;pointer-events:none;opacity:0;transform:translate3d(-2px,-2px,0);transition:opacity .1s ease}
     .pointer-cursor.visible{opacity:1}
-    .pointer-cursor .cursor-arrow{position:absolute;left:0;top:0;width:23px;height:30px;overflow:visible;transform:translate(-2px,-2px);transform-origin:4px 4px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));transition:transform .16s ease,filter .16s ease}
-    .pointer-cursor .cursor-arrow path{fill:var(--cream);stroke:#171913;stroke-width:1.35;stroke-linejoin:round}
-    .pointer-cursor.hot .cursor-arrow{transform:translate(-2px,-2px) rotate(-5deg) scale(1.08);filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+    .pointer-cursor .cursor-arrow{position:absolute;left:0;top:0;width:22px;height:29px;overflow:visible;transform-origin:4px 4px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.38));transition:transform .14s ease,filter .14s ease}
+    .pointer-cursor .cursor-arrow path{fill:var(--cream);stroke:#171913;stroke-width:1.5;stroke-linejoin:round}
+    .pointer-cursor.hot .cursor-arrow{transform:rotate(-4deg) scale(1.08);filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
     .pointer-cursor.hot .cursor-arrow path{fill:var(--lime);stroke:#171913}
-    .pointer-cursor.down .cursor-arrow{transform:translate(-2px,-2px) scale(.88)}
-    .pointer-cursor .cursor-spark{position:absolute;left:14px;top:19px;width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px rgba(199,255,61,.65);opacity:.9;transition:transform .16s ease,opacity .16s ease}
-    .pointer-cursor.hot .cursor-spark{transform:translate(4px,-4px) scale(1.25);opacity:1}
+    .pointer-cursor.down .cursor-arrow{transform:scale(.9)}
+    .pointer-cursor .cursor-spark{position:absolute;left:13px;top:18px;width:4px;height:4px;border-radius:50%;background:var(--lime);box-shadow:0 0 6px rgba(199,255,61,.55);opacity:.85;transition:transform .14s ease}
+    .pointer-cursor.hot .cursor-spark{transform:translate(3px,-3px) scale(1.15)}
     @media (hover:hover) and (pointer:fine){html.has-custom-cursor,html.has-custom-cursor *{cursor:none!important}html.has-custom-cursor input,html.has-custom-cursor textarea,html.has-custom-cursor [contenteditable="true"]{cursor:text!important}}
     @media (hover:none),(pointer:coarse){.pointer-cursor{display:none!important}}
     @media (prefers-reduced-motion:reduce){.pointer-cursor,.pointer-cursor .cursor-arrow,.pointer-cursor .cursor-spark{transition:none}}
@@ -673,23 +673,29 @@
       const all = (selector, root=document) => [...root.querySelectorAll(selector)];
       const panels = $('.panel');
 
-      // Direct-follow custom arrow: visible on fine pointers, native cursor retained on touch.
-      const cursorUI=$('#pointerCursor'),cursorArrow=$('#cursorArrow');
+      // Custom arrow is positioned as a small fixed element, so it remains visible above every panel.
+      const cursorUI=$('#pointerCursor');
       const finePointer=window.matchMedia('(hover:hover) and (pointer:fine)');
       if(finePointer.matches){
-        document.documentElement.classList.add('has-custom-cursor');
         window.addEventListener('pointermove',event=>{
           if(event.pointerType==='touch')return;
-          cursorArrow.style.left=event.clientX+'px';
-          cursorArrow.style.top=event.clientY+'px';
+          cursorUI.style.left=event.clientX+'px';
+          cursorUI.style.top=event.clientY+'px';
           cursorUI.classList.add('visible');
+          document.documentElement.classList.add('has-custom-cursor');
           const target=event.target&&event.target.closest?event.target.closest('a,button,[role="button"],.project-window,.index-row'):null;
           cursorUI.classList.toggle('hot',!!target);
         },{passive:true});
         window.addEventListener('pointerdown',()=>cursorUI.classList.add('down'),{passive:true});
         window.addEventListener('pointerup',()=>cursorUI.classList.remove('down'),{passive:true});
-        document.documentElement.addEventListener('pointerleave',()=>cursorUI.classList.remove('visible'));
-        window.addEventListener('blur',()=>cursorUI.classList.remove('visible'));
+        document.documentElement.addEventListener('pointerleave',()=>{
+          cursorUI.classList.remove('visible');
+          document.documentElement.classList.remove('has-custom-cursor');
+        });
+        window.addEventListener('blur',()=>{
+          cursorUI.classList.remove('visible');
+          document.documentElement.classList.remove('has-custom-cursor');
+        });
       }
       const track = $('#track');
       const viewport = $('#viewport');
@@ -698,8 +704,6 @@
       const names = panels.map(panel => panel.dataset.name);
       let active = 0;
       let moving = false;
-      let wheelSum = 0;
-      let wheelTimer = 0;
       let touchStart = null;
 
       // Build the small lime tile transition once. The tiles only animate transforms.
@@ -757,26 +761,21 @@
         if(event.key==='Home'){event.preventDefault();goTo(0);}
         if(event.key==='End'){event.preventDefault();goTo(panels.length-1);}
       });
-      // Capture wheel and trackpad events even when the pointer sits over fixed navigation.
-      let wheelDirection=0;
+      // One deliberate wheel gesture advances one panel. Capture phase also works over fixed controls.
+      let lastWheelAt=0;
       window.addEventListener('wheel',event=>{
-        const target=event.target&&event.target.closest?event.target.closest('dialog[open],input,textarea,select,[contenteditable="true"]'):null;
-        if(target||$('#semiDialog').open||$('#caseDialog').open)return;
-        const primary=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;
-        if(Math.abs(primary)<1)return;
+        if($('#semiDialog').open||$('#caseDialog').open)return;
+        const target=event.target&&event.target.closest?event.target.closest('input,textarea,select,[contenteditable="true"]'):null;
+        if(target)return;
+        const dx=Math.abs(event.deltaX),dy=Math.abs(event.deltaY);
+        const primary=dx>dy?event.deltaX:event.deltaY;
+        if(primary===0)return;
         event.preventDefault();
-        const direction=Math.sign(primary);
-        if(direction!==wheelDirection){wheelSum=0;wheelDirection=direction;}
-        if(moving){wheelSum=0;return;}
-        wheelSum+=primary;
-        clearTimeout(wheelTimer);
-        wheelTimer=setTimeout(()=>{wheelSum=0;wheelDirection=0;},280);
-        const threshold=Math.abs(primary)>48?28:34;
-        if(Math.abs(wheelSum)>=threshold){
-          const step=wheelDirection>0?1:-1;
-          wheelSum=0;
-          goTo(active+step);
-        }
+        const now=performance.now();
+        if(moving||now-lastWheelAt<820)return;
+        lastWheelAt=now;
+        wheelSum=0;
+        goTo(active+(primary>0?1:-1));
       },{passive:false,capture:true});
       viewport.addEventListener('pointerdown',event=>{if(event.pointerType==='touch' && !event.target.closest('button,a'))touchStart={x:event.clientX,y:event.clientY};});
       viewport.addEventListener('pointerup',event=>{
