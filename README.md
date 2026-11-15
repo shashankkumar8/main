@@ -102,6 +102,6 @@ The supplied rules permit AI tools, but reward the participant's own contributio
 
 ## Quality checks performed
 
-The inline JavaScript passed `node --check`. The HTML was parsed and checked for duplicate IDs. A headless Chromium interaction pass checked navigation, the project selector, project dialog, Semi settings and persistence, theme switching, wheel/keyboard/touch navigation, the capsule dispenser and mobile navigation. The document and panel inner areas were checked at 1600×900, 1280×720, 768×1024, 390×844, 375×667 and 360×640; no document-level scroll or panel-content overflow was found at those viewports.
+The inline JavaScript passed `node --check`. The HTML was parsed and checked for duplicate IDs. A headless Chromium smoke test uses a real mouse-wheel gesture over the fixed header, verifies the horizontal track advances from Home to Build, checks ArrowRight navigation to Work, confirms the custom arrow appears at the pointer, and fails on browser runtime errors. The broader interactive pass also covers the project selector, project dialog, Semi settings and persistence, theme switching, touch navigation, the capsule dispenser and mobile navigation. The document and panel inner areas were checked at 1600×900, 1280×720, 768×1024, 390×844, 375×667 and 360×640; no document-level scroll or panel-content overflow was found at those viewports.
 
 A formal Lighthouse run, WCAG certification and assistive-technology audit have not been performed, so no scores or certification are claimed.
