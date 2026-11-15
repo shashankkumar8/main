@@ -1,0 +1,49 @@
+name: Portfolio quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate inline JavaScript and page structure
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)]
+            .map(match => match[1])
+            .filter(script => script.trim());
+          if (scripts.length !== 1) throw new Error('Expected one inline application script.');
+          fs.writeFileSync('/tmp/portfolio-inline.js', scripts.join('\\n'));
+          const check = spawnSync(process.execPath, ['--check', '/tmp/portfolio-inline.js'], { encoding: 'utf8' });
+          if (check.status !== 0) {
+            process.stderr.write(check.stderr || check.stdout);
+            process.exit(check.status || 1);
+          }
+          const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(match => match[1]);
+          const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+          if (duplicates.length) throw new Error('Duplicate HTML IDs: ' + [...new Set(duplicates)].join(', '));
+          const required = [
+            'pointerCursor', 'cursorArrow', 'semiFloat', 'semiFollow',
+            'prevPanel', 'nextPanel', 'caseDialog', 'semiDialog', 'mobileMenu'
+          ];
+          for (const id of required) {
+            if (!html.includes('id="' + id + '"')) throw new Error('Missing required control: ' + id);
+          }
+          if (!html.includes("window.addEventListener('wheel'")) throw new Error('Global wheel navigation handler is missing.');
+          if (html.includes('rag-agent') || html.includes('RAG AI Agent')) throw new Error('Removed RAG AI Agent is still present.');
+          if (!html.includes('https://www.linkedin.com/in/shashank-kumar-2b574228b/')) throw new Error('LinkedIn URL is missing.');
+          console.log('Portfolio checks passed: inline JS syntax, unique IDs, navigation, cursor, Semi and links.');
+          NODE
