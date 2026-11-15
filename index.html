@@ -462,17 +462,17 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.wipe{display:none}.hero-glyph{transform:none}}
   
     /* Custom interactive cursor — desktop only; touch keeps native pointer behaviour. */
-    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .18s}
+    /* A restrained lime cursor: small core, quiet tracking ring, no labels or oversized hover blob. */
+    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .16s ease}
     .pointer-cursor.visible{opacity:1}
-    .pointer-cursor .cursor-core{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(199,255,61,.72);transform:translate3d(-50%,-50%,0)}
-    .pointer-cursor .cursor-ring{position:absolute;left:0;top:0;width:34px;height:34px;border:1px solid rgba(199,255,61,.85);border-radius:50%;background:rgba(199,255,61,.035);transform:translate3d(-50%,-50%,0);transition:width .22s var(--ease),height .22s var(--ease),background .22s,border-color .22s,box-shadow .22s;display:grid;place-items:center;backdrop-filter:blur(2px)}
-    .pointer-cursor .cursor-label{font:500 8px var(--mono);letter-spacing:.08em;color:#11150b;opacity:0;transform:scale(.8);transition:opacity .18s,transform .18s}
-    .pointer-cursor.hot .cursor-ring{width:68px;height:68px;background:var(--lime);border-color:var(--lime);box-shadow:0 0 28px rgba(199,255,61,.24)}
-    .pointer-cursor.hot .cursor-label{opacity:1;transform:scale(1)}
-    .pointer-cursor.down .cursor-ring{width:24px;height:24px}
-    @media (hover:hover) and (pointer:fine){html.has-custom-cursor,html.has-custom-cursor *{cursor:none!important}}
+    .pointer-cursor .cursor-core{position:absolute;left:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 5px rgba(199,255,61,.25);transform:translate3d(-50%,-50%,0)}
+    .pointer-cursor .cursor-ring{position:absolute;left:0;top:0;width:25px;height:25px;border:1px solid rgba(199,255,61,.52);border-radius:50%;background:transparent;transform:translate3d(-50%,-50%,0);transition:width .2s ease,height .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease;opacity:.88}
+    .pointer-cursor.hot .cursor-ring{width:34px;height:34px;border-color:rgba(199,255,61,.9);background:rgba(199,255,61,.055);opacity:1}
+    .pointer-cursor.down .cursor-ring{width:18px;height:18px;background:rgba(199,255,61,.12)}
+    .pointer-cursor .cursor-label{display:none}
+    @media (hover:hover) and (pointer:fine){html.has-custom-cursor,html.has-custom-cursor *{cursor:none!important}html.has-custom-cursor input,html.has-custom-cursor textarea,html.has-custom-cursor [contenteditable="true"]{cursor:text!important}}
     @media (hover:none),(pointer:coarse){.pointer-cursor{display:none!important}}
-    @media (prefers-reduced-motion:reduce){.pointer-cursor .cursor-ring,.pointer-cursor .cursor-label{transition:none}}
+    @media (prefers-reduced-motion:reduce){.pointer-cursor,.pointer-cursor .cursor-ring{transition:none}}
 
   </style>
 </head>
@@ -662,7 +662,7 @@
     <div class="case-links" id="caseLinks"></div>
   </dialog>
 
-  <div class="pointer-cursor" id="pointerCursor" aria-hidden="true"><span class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></span><span class="cursor-core" id="cursorCore"></span></div>
+  <div class="pointer-cursor" id="pointerCursor" aria-hidden="true"><span class="cursor-ring" id="cursorRing"></span><span class="cursor-core" id="cursorCore"></span></div>
 
   <script>
     (() => {
@@ -671,31 +671,32 @@
       const $ = (selector, root=document) => [...root.querySelectorAll(selector)];
       const panels = $('.panel');
 
-      // A lagged ring + precise core give the pointer a tactile, purposeful presence.
-      const cursorUI=$('#pointerCursor'),cursorRing=$('#cursorRing'),cursorCore=$('#cursorCore'),cursorLabel=$('#cursorLabel');
+      // Custom cursor runs only while moving; a restrained follower avoids a permanent animation loop.
+      const cursorUI=$('#pointerCursor'),cursorRing=$('#cursorRing'),cursorCore=$('#cursorCore');
       const finePointer=window.matchMedia('(hover:hover) and (pointer:fine)');
-      let pointer={x:window.innerWidth/2,y:window.innerHeight/2},ringPoint={...pointer};
+      let pointer={x:0,y:0},ringPoint={x:0,y:0},cursorFrame=0;
+      function moveCursorRing(){
+        cursorFrame=0;
+        ringPoint.x+=(pointer.x-ringPoint.x)*.22;
+        ringPoint.y+=(pointer.y-ringPoint.y)*.22;
+        cursorRing.style.transform='translate3d('+ringPoint.x+'px,'+ringPoint.y+'px,0) translate3d(-50%,-50%,0)';
+        if(Math.abs(pointer.x-ringPoint.x)>.3||Math.abs(pointer.y-ringPoint.y)>.3)cursorFrame=requestAnimationFrame(moveCursorRing);
+      }
       if(finePointer.matches){
         document.documentElement.classList.add('has-custom-cursor');
-        const cursorTick=()=>{
-          ringPoint.x+=(pointer.x-ringPoint.x)*.18;ringPoint.y+=(pointer.y-ringPoint.y)*.18;
-          cursorRing.style.transform='translate3d('+ringPoint.x+'px,'+ringPoint.y+'px,0) translate3d(-50%,-50%,0)';
-          cursorCore.style.transform='translate3d('+pointer.x+'px,'+pointer.y+'px,0) translate3d(-50%,-50%,0)';
-          requestAnimationFrame(cursorTick);
-        };
-        requestAnimationFrame(cursorTick);
         window.addEventListener('pointermove',event=>{
           if(event.pointerType==='touch')return;
-          pointer.x=event.clientX;pointer.y=event.clientY;cursorUI.classList.add('visible');
+          pointer.x=event.clientX;pointer.y=event.clientY;
+          cursorCore.style.transform='translate3d('+pointer.x+'px,'+pointer.y+'px,0) translate3d(-50%,-50%,0)';
+          cursorUI.classList.add('visible');
           const target=event.target.closest('a,button,[role="button"],.project-window,.index-row');
-          const isHot=!!target;
-          cursorUI.classList.toggle('hot',isHot);
-          cursorLabel.textContent=target&&target.id==='semiFloat'?'SEMI':target&&target.classList.contains('project-tab')?'SELECT':target&&target.classList.contains('index-row')?'OPEN':target&&target.id==='dispenseSemi'?'GET':target&&target.id==='openSemi'?'CUSTOM':isHot?'OPEN':'';
+          cursorUI.classList.toggle('hot',!!target);
+          if(!cursorFrame)cursorFrame=requestAnimationFrame(moveCursorRing);
         },{passive:true});
         window.addEventListener('pointerdown',()=>cursorUI.classList.add('down'),{passive:true});
         window.addEventListener('pointerup',()=>cursorUI.classList.remove('down'),{passive:true});
         document.documentElement.addEventListener('pointerleave',()=>cursorUI.classList.remove('visible'));
-        document.documentElement.addEventListener('pointerenter',()=>cursorUI.classList.add('visible'));
+        window.addEventListener('blur',()=>cursorUI.classList.remove('visible'));
       }
       const track = $('#track');
       const viewport = $('#viewport');
@@ -853,7 +854,7 @@
         semi.shape=shapes[Math.floor(Math.random()*shapes.length)];semi.material=materials[Math.floor(Math.random()*materials.length)];semi.colour=keys[Math.floor(Math.random()*keys.length)];semi.mood=moods[Math.floor(Math.random()*moods.length)];syncSemi();
       });
       $('#resetSemi').addEventListener('click',()=>{semi={...defaults};syncSemi();});
-      // Semi floats toward the pointer with a soft spring, and freezes when the visitor hovers it.
+      // Semi follows with a damped spring, starting from its dock and pausing on hover.
       const semiFloat=$('#semiFloat');
       let semiTarget=null,semiPosition=null,semiFollowFrame=0;
       function clearSemiFollow(){
@@ -867,15 +868,19 @@
       window.addEventListener('pointermove',event=>{
         if(event.pointerType==='touch'||!semi.follow||active===7||semiDialog.open)return;
         if(event.target.closest&&event.target.closest('#semiFloat')){
-          if(semiPosition){semiTarget={...semiPosition};requestSemiFollow();}
+          if(semiPosition){semiTarget={x:semiPosition.x,y:semiPosition.y};requestSemiFollow();}
           return;
         }
         const w=semiFloat.offsetWidth||58,h=semiFloat.offsetHeight||68,margin=26;
-        let x=event.clientX+76,y=event.clientY+44;
-        if(x+w/2>window.innerWidth-margin)x=event.clientX-76;
-        if(y+h/2>window.innerHeight-margin)y=event.clientY-78;
+        let x=event.clientX+72,y=event.clientY+42;
+        if(x+w/2>window.innerWidth-margin)x=event.clientX-72;
+        if(y+h/2>window.innerHeight-margin)y=event.clientY-76;
         x=Math.max(w/2+margin,Math.min(window.innerWidth-w/2-margin,x));
         y=Math.max(h/2+margin,Math.min(window.innerHeight-h/2-margin,y));
+        if(!semiPosition){
+          const rect=semiFloat.getBoundingClientRect();
+          semiPosition={x:rect.left+rect.width/2,y:rect.top+rect.height/2};
+        }
         semiTarget={x,y};
         requestSemiFollow();
       },{passive:true});
@@ -888,7 +893,7 @@
           semiPosition.y+=(semiTarget.y-semiPosition.y)*.14;
           semiFloat.classList.add('is-following');
           semiFloat.style.left=semiPosition.x+'px';semiFloat.style.top=semiPosition.y+'px';
-          if(Math.abs(semiTarget.x-semiPosition.x)>.45||Math.abs(semiTarget.y-semiPosition.y)>.45)requestSemiFollow();
+          if(Math.abs(semiTarget.x-semiPosition.x)>.35||Math.abs(semiTarget.y-semiPosition.y)>.35)requestSemiFollow();
         }else if(semiFloat.classList.contains('is-following')){
           clearSemiFollow();semiPosition=null;
         }
