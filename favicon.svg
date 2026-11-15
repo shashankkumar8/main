@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="10" fill="#090b09" stroke="#c4ff39" stroke-width="2"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="27" font-weight="700" fill="#c4ff39">SK</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="#0f110d" stroke="#c9d4b8" stroke-opacity=".6" stroke-width="1.5"/>
+  <path d="M17 43V20h7v9l10-9h9L29 31l15 12h-10L24 34v9z" fill="#f0e5c8"/>
+  <circle cx="48" cy="17" r="6" fill="#d8ff65"/>
+</svg>
