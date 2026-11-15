@@ -762,7 +762,7 @@
         if(event.key==='End'){event.preventDefault();goTo(panels.length-1);}
       });
       // One deliberate wheel gesture advances one panel. Capture phase also works over fixed controls.
-      let lastWheelAt=0;
+      let lastWheelAt=-Infinity;
       window.addEventListener('wheel',event=>{
         if($('#semiDialog').open||$('#caseDialog').open)return;
         const target=event.target&&event.target.closest?event.target.closest('input,textarea,select,[contenteditable="true"]'):null;
