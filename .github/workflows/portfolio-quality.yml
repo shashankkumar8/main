@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install Chromium smoke-test dependency
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium
       - name: Validate inline JavaScript and page structure
         run: |
           node <<'NODE'
@@ -47,3 +51,5 @@ jobs:
           if (!html.includes('https://www.linkedin.com/in/shashank-kumar-2b574228b/')) throw new Error('LinkedIn URL is missing.');
           console.log('Portfolio checks passed: inline JS syntax, unique IDs, navigation, cursor, Semi and links.');
           NODE
+      - name: Run browser interaction smoke test
+        run: node scripts/portfolio-smoke.cjs
