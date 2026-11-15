@@ -38,7 +38,7 @@ Semi is a custom SVG character, not an external pet widget. Visitors can select:
 - Mood: idle, working, sleeping or surprise.
 - Pointer-follow on/off, surprise and reset.
 
-The capsule dispenser triggers a small mechanical animation and gives Semi a new shape, colour and mood. On desktop, Semi follows the pointer with a soft spring-like offset; the follow switch returns Semi to its docked position. A custom lime cursor uses a lagging ring, a precise core and contextual labels on interactive elements. Both effects fall back cleanly on touch devices. Preferences are saved only in local browser storage. Semi does not need an account, network API or analytics service.
+The capsule dispenser triggers a small mechanical animation and gives Semi a new shape, colour and mood. On desktop, Semi starts from its docked position and follows the pointer with a soft spring-like offset; it pauses when hovered, and the follow switch returns Semi to its docked position. A restrained custom lime cursor uses a small precise core and a thin lagging ring, with a subtle size change over interactive elements. Both effects fall back cleanly on touch devices. Preferences are saved only in local browser storage. Semi does not need an account, network API or analytics service.
 
 ## Featured projects
 
@@ -57,7 +57,7 @@ The repository index also links ScholarRAG, GraphProbe-X, GuardianShield CLI, Bi
 - Project datasets are synthetic where the individual repository documents say so. Project limitations are described in their case-study dialogs.
 - There are no invented job titles, internships, clients, awards, users, revenue, performance claims or testimonials.
 - The page uses an abstract “S” monogram rather than an unprovided personal photograph.
-- The Contact panel links to the public GitHub profile and the supplied LinkedIn profile. The email link remains pending confirmation of the exact public address.
+- The Contact panel links to the public GitHub profile and the supplied LinkedIn profile. No email address is published.
 - No particle-portrait model, cloth simulation or third-party flower-valley engine is included. Semi is the one custom character experience, keeping the portfolio visually coherent and lightweight.
 
 ## Technology and delivery
