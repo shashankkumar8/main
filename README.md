@@ -1,66 +1,107 @@
-# Shashank Kumar — Systems in Bloom
+# Shashank Kumar — Build / Design / Ship
 
-A personal engineering portfolio built as one standalone HTML page. It brings together a point-cloud companion, a tactile fabric interaction, a generative flower valley, project case studies, and a customisable Semi pet.
+A personal software-engineering portfolio built as a single-page, horizontally navigated experience. It uses a dark editorial identity, lime mosaic transitions, project case studies, a contrasting light About panel and a customisable companion named Semi.
 
 ## Live portfolio
 
 https://shashank-systems-room.onrender.com
 
-## Visual journey
+## How to navigate
 
-1. **Point-cloud introduction** — a small procedural Three.js companion named Semi assembles from 4,800 generated particles. The progress ring measures local particle generation, not a remote model download. Pointer movement steers the light and gently turns the particle group.
-2. **Selected builds** — MitraCare, SettleGraph 0.6, Rootline Omni and TraceFuse, plus an index of additional public repositories. Project mockups are labelled illustrative, not live product screenshots.
-3. **Pull the thread** — a custom canvas-based Verlet fabric study with a portfolio-specific holographic graphic. It can be grabbed and tugged with a pointer or touch.
-4. **Flower valley** — an original procedural 2.5D canvas environment with perspective, bloom sprites, depth fog, cursor response and scroll-driven travel. Optional ambient audio is generated with Web Audio; no third-party soundtrack or copied Gladeye engine is used.
-5. **About / toolkit** — education, approach and tools shown in the public projects.
-6. **Semi capsule ending** — customisable companion with shape, material, colour, mood and follow settings, plus an interactive capsule dispenser.
+The site is intentionally **horizontal**, not a vertically scrolling portfolio. Visitors can move between the eight full-screen panels with:
+
+- Mouse wheel or trackpad gesture.
+- Horizontal touch swipe on mobile.
+- Left/right arrow keys, Home and End keys.
+- The fixed top navigation or bottom section controller.
+
+Each transition uses a staggered lime tile wipe. The page remains one viewport wide and high; long project details are presented in a dialog, and Semi's settings drawer scrolls independently when needed.
+
+## What is included
+
+1. **Home** — Shashank's introduction, education context and original dotted monogram artwork.
+2. **Build** — a short Build / Design / Explore / Ship philosophy.
+3. **Work** — four featured projects with selectable preview scenes and detailed case-study dialogs.
+4. **Project index** — additional public repositories.
+5. **About** — education, project interests and engineering principles.
+6. **Journey** — learning and project-building themes without fabricated employment history.
+7. **Skills** — technologies represented across the repositories.
+8. **Contact** — verified public GitHub links and the interactive Semi capsule machine.
+
+### Semi companion
+
+Semi is a custom SVG character, not an external pet widget. Visitors can select:
+
+- Shape: round, clover, flower or square.
+- Material: fabric, glass, glow or plastic.
+- Seven named colours.
+- Mood: idle, working, sleeping or surprise.
+- Pointer-follow on/off, surprise and reset.
+
+The capsule dispenser triggers a small mechanical animation and gives Semi a new shape, colour and mood. Preferences are saved only in local browser storage. Semi does not need an account, network API or analytics service.
 
 ## Featured projects
 
-| Project | Focus | Source / demo |
+| Project | What it explores | Source |
 |---|---|---|
-| MitraCare | Shared elder-care and medication coordination | [Source](https://github.com/shashankkumar8/MitraCare) · [Live app](https://mitracare-api-shashank-k8r3-cfr0.onrender.com) |
-| SettleGraph 0.6 | Merchant settlement reconciliation and evidence investigation | [Source](https://github.com/shashankkumar8/SettleGraph) · [Live app](https://settlegraph-frontend-shashank.onrender.com) |
-| Rootline Omni | Graph-powered incident investigation with FalkorDB | [Source](https://github.com/shashankkumar8/ROOTLINE-OMNI) |
-| TraceFuse | Explainable multi-hop financial-crime pattern investigation | [Source](https://github.com/shashankkumar8/Tracefuse) |
+| **MitraCare** | Patient-first elder-care coordination, medication routines, appointments and care-circle access | https://github.com/shashankkumar8/MitraCare |
+| **SettleGraph 0.6** | Merchant settlement reconciliation, financial evidence and human-led exception investigation | https://github.com/shashankkumar8/SettleGraph |
+| **Rootline Omni** | FalkorDB-powered graph incident investigation, evidence ranking and isolated graph simulations | https://github.com/shashankkumar8/ROOTLINE-OMNI |
+| **TraceFuse** | Explainable multi-hop financial-pattern investigation | https://github.com/shashankkumar8/Tracefuse |
 
-Additional projects linked in the page include RAG AI Agent, ScholarRAG, GraphProbe-X, GuardianShield CLI, BidSentry-E and PHOTON OS '06.
+The repository index also links ScholarRAG, GraphProbe-X, RAG AI Agent, GuardianShield CLI, BidSentry-E and PHOTON OS '06.
 
-## Technical implementation
+## Honesty and boundaries
 
-- One `index.html`; no build system, package installation or server API required.
-- Three.js 0.170.0 loaded from jsDelivr for the point-cloud companion, with a CSS fallback if WebGL/Three.js is unavailable.
-- Canvas 2D for the cloth physics and flower valley.
-- Web Audio API for user-enabled ambient tones; audio starts muted.
-- Google Fonts: DM Sans, DM Mono, DM Serif Display, Space Grotesk and Antonio.
-- Responsive CSS, visible focus states, reduced-motion support, and section navigation.
+- The feature dashboard previews are **illustrative UI compositions**, not live product screenshots, production telemetry or benchmark results. The page labels them “Illustrative UI”.
+- Project datasets are synthetic where the individual repository documents say so. Project limitations are described in their case-study dialogs.
+- There are no invented job titles, internships, clients, awards, users, revenue, performance claims or testimonials.
+- The page uses an abstract “S” monogram rather than an unprovided personal photograph.
+- The Contact panel links to the public GitHub profile. No unverified email address, LinkedIn URL or résumé file is published.
+- No particle-portrait model, cloth simulation or third-party flower-valley engine is included. Semi is the one custom character experience, keeping the portfolio visually coherent and lightweight.
+
+## Technology and delivery
+
+- Single-file HTML, CSS and vanilla JavaScript; no runtime framework or build step.
+- CSS transforms and a small event-driven controller for horizontal navigation and transitions.
+- Inline SVG for the brand, Semi and small interface artwork.
+- Google Fonts for DM Sans, DM Mono, Space Grotesk and DM Serif Display, with local system fallbacks.
+- Local storage for the theme and Semi preferences only.
+- No third-party animation engine, GLB model, analytics, backend API or external image dependency.
 
 ## Run locally
 
-Open `index.html` directly, or start a static server:
+Open `index.html` directly, or serve the folder with Python:
 
 ```bash
 python -m http.server 8080
 ```
 
-Then open http://127.0.0.1:8080.
+Open http://localhost:8080.
 
-## Render Static Site
+## Deploy on Render
 
+- Service: Static Site
 - Repository: `shashankkumar8/main`
 - Branch: `main`
-- Build command: `echo "Static portfolio — no build step required"`
+- Build command: `echo "No build step required"`
 - Publish directory: `.`
 
-## Accuracy and boundaries
+## One Who Codes 2026 — judging alignment
 
-- The Semi particle scene is generated procedurally. It is not a scan or portrait of a real person.
-- The cloth study is an original, simplified 2D Verlet simulation, not the supplied third-party WebGL implementation.
-- The flower valley is an original 2.5D canvas recreation of the interaction idea, not the licensed Gladeye scene or its compiled engine.
-- MitraCare and SettleGraph have hosted demos. The project preview cards are illustrative dashboard mockups; they are not screenshots of those live systems.
-- Rootline Omni and TraceFuse are prototypes built around synthetic data. Their pages do not claim production incident or banking integrations.
-- No internships, jobs, client relationships, awards, user counts, revenue or unverified performance metrics are claimed.
+The supplied challenge brief lists the following weights. The implementation is designed around those criteria, without claiming a guaranteed rank:
 
-## Design references
+| Criterion | Weight | Portfolio evidence |
+|---|---:|---|
+| Creativity | 30% | Original visual identity, horizontally navigated experience, tile transition system and Semi companion |
+| Craft | 30% | Consistent typography, project-specific preview layouts, responsive panel composition, dialogs and interactive states |
+| Content | 20% | Education and project summaries grounded in public repositories; prototype limitations are stated |
+| Performance & accessibility | 20% | No runtime framework or 3D engine, no document scrolling, keyboard/touch navigation, visible focus, semantic controls and reduced-motion support |
 
-The supplied prompts and screenshots informed the interaction vocabulary: dot-cloud assembly, a draggable iridescent fabric, a generative night garden, and a warm footer with a small companion customiser. The code, copy, companion art, cloth graphic and valley scene in this repository are independently implemented for Shashank Kumar; reference sites' proprietary code, models, textures, music and logos are not reused.
+The supplied rules permit AI tools, but reward the participant's own contribution and GitHub development history. The entry requirements also call for a ONEWHO address, an application link ending in `/a/unstop`, and the public source repository submitted through Unstop. Those account actions are not performed by this website.
+
+## Quality checks performed
+
+The inline JavaScript passed `node --check`. The HTML was parsed and checked for duplicate IDs. A headless Chromium interaction pass checked navigation, the project selector, project dialog, Semi settings and persistence, theme switching, wheel/keyboard/touch navigation, the capsule dispenser and mobile navigation. The document and panel inner areas were checked at 1600×900, 1280×720, 768×1024, 390×844, 375×667 and 360×640; no document-level scroll or panel-content overflow was found at those viewports.
+
+A formal Lighthouse run, WCAG certification and assistive-technology audit have not been performed, so no scores or certification are claimed.
