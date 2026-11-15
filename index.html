@@ -284,6 +284,8 @@
     /* Semi companion and customization */
     .semi-float{position:fixed;right:clamp(18px,3vw,55px);bottom:93px;z-index:58;width:58px;height:68px;border:0;background:transparent;padding:0;filter:drop-shadow(0 9px 10px rgba(0,0,0,.25));transition:opacity .3s,transform .3s}
     .semi-float:hover{transform:translateY(-5px) scale(1.06)}.semi-float svg{width:100%;height:100%;overflow:visible}
+    .semi-float.is-following{right:auto;bottom:auto;transform:translate3d(-50%,-50%,0);transition:filter .3s,opacity .3s;will-change:left,top}
+    .semi-float.is-following:hover{transform:translate3d(-50%,-50%,0) scale(1.06)}
     .semi-shadow{fill:rgba(0,0,0,.2)}.semi-body{fill:var(--semi-color,#e79a43);stroke:rgba(28,22,14,.45);stroke-width:2}.semi-shine{fill:rgba(255,255,255,.54)}.semi-eye{fill:#1b1812}.semi-mouth{fill:none;stroke:#3a2519;stroke-width:2;stroke-linecap:round}
     .semi-glasses{stroke:#25221a;stroke-width:2;fill:rgba(230,245,255,.14);display:none}.semi-float[data-material="glass"] .semi-body,.semi-dialog[data-material="glass"] .semi-body{fill-opacity:.68;stroke:rgba(255,255,255,.75)}
     .semi-float[data-material="glow"] svg,.semi-dialog[data-material="glow"] .semi-avatar svg{filter:drop-shadow(0 0 12px var(--semi-color))}
@@ -458,6 +460,20 @@
       .footer-line{font-size:6px}
     }
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.wipe{display:none}.hero-glyph{transform:none}}
+  
+    /* Custom interactive cursor — desktop only; touch keeps native pointer behaviour. */
+    .pointer-cursor{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;transition:opacity .18s}
+    .pointer-cursor.visible{opacity:1}
+    .pointer-cursor .cursor-core{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(199,255,61,.72);transform:translate3d(-50%,-50%,0)}
+    .pointer-cursor .cursor-ring{position:absolute;left:0;top:0;width:34px;height:34px;border:1px solid rgba(199,255,61,.85);border-radius:50%;background:rgba(199,255,61,.035);transform:translate3d(-50%,-50%,0);transition:width .22s var(--ease),height .22s var(--ease),background .22s,border-color .22s,box-shadow .22s;display:grid;place-items:center;backdrop-filter:blur(2px)}
+    .pointer-cursor .cursor-label{font:500 8px var(--mono);letter-spacing:.08em;color:#11150b;opacity:0;transform:scale(.8);transition:opacity .18s,transform .18s}
+    .pointer-cursor.hot .cursor-ring{width:68px;height:68px;background:var(--lime);border-color:var(--lime);box-shadow:0 0 28px rgba(199,255,61,.24)}
+    .pointer-cursor.hot .cursor-label{opacity:1;transform:scale(1)}
+    .pointer-cursor.down .cursor-ring{width:24px;height:24px}
+    @media (hover:hover) and (pointer:fine){html.has-custom-cursor,html.has-custom-cursor *{cursor:none!important}}
+    @media (hover:none),(pointer:coarse){.pointer-cursor{display:none!important}}
+    @media (prefers-reduced-motion:reduce){.pointer-cursor .cursor-ring,.pointer-cursor .cursor-label{transition:none}}
+
   </style>
 </head>
 <body>
@@ -558,7 +574,7 @@
             <div class="index-list" id="indexList">
               <a class="index-row" href="https://github.com/shashankkumar8/academicRagmi" target="_blank" rel="noopener noreferrer"><span class="idx">01</span><span class="name">ScholarRAG</span><span class="tag">RAG / Research</span><span class="out">↗</span></a>
               <a class="index-row" href="https://github.com/shashankkumar8/GraphProbe-X" target="_blank" rel="noopener noreferrer"><span class="idx">02</span><span class="name">GraphProbe-X</span><span class="tag">Graph / Agents</span><span class="out">↗</span></a>
-              <a class="index-row" href="https://github.com/shashankkumar8/rag-agent" target="_blank" rel="noopener noreferrer"><span class="idx">03</span><span class="name">RAG AI Agent</span><span class="tag">Full-stack / AI</span><span class="out">↗</span></a>
+              <a class="index-row" href="https://github.com/shashankkumar8/SettleGraph" target="_blank" rel="noopener noreferrer"><span class="idx">03</span><span class="name">SettleGraph</span><span class="tag">Fintech / Reconciliation</span><span class="out">↗</span></a>
               <a class="index-row" href="https://github.com/shashankkumar8/guardianshield-cli" target="_blank" rel="noopener noreferrer"><span class="idx">04</span><span class="name">GuardianShield CLI</span><span class="tag">Security / Python</span><span class="out">↗</span></a>
               <a class="index-row" href="https://github.com/shashankkumar8/BidSentry-E" target="_blank" rel="noopener noreferrer"><span class="idx">05</span><span class="name">BidSentry-E</span><span class="tag">Tender / Evidence</span><span class="out">↗</span></a>
               <a class="index-row" href="https://github.com/shashankkumar8/photon-os-06" target="_blank" rel="noopener noreferrer"><span class="idx">06</span><span class="name">PHOTON OS '06</span><span class="tag">Creative / Simulation</span><span class="out">↗</span></a>
@@ -608,7 +624,7 @@
         <div class="panel-inner contact-layout">
           <div class="contact-copy"><div class="hello-mark">SHASHANK KUMAR / 2026</div><h2>Thanks for exploring.<br>Let's make something people actually use.</h2><p>Have a project, idea or opportunity in mind? Start a conversation through my public GitHub profile.</p><a class="button button-dark" style="margin-top:19px" href="https://github.com/shashankkumar8" target="_blank" rel="noopener noreferrer">Find me on GitHub <span class="arrow">↗</span></a></div>
           <div class="contact-links"><h3>WORK</h3><a href="https://github.com/shashankkumar8/MitraCare" target="_blank" rel="noopener noreferrer">MitraCare <span>↗</span></a><a href="https://github.com/shashankkumar8/SettleGraph" target="_blank" rel="noopener noreferrer">SettleGraph <span>↗</span></a><a href="https://github.com/shashankkumar8/ROOTLINE-OMNI" target="_blank" rel="noopener noreferrer">Rootline <span>↗</span></a><a href="https://github.com/shashankkumar8/Tracefuse" target="_blank" rel="noopener noreferrer">TraceFuse <span>↗</span></a></div>
-          <div class="contact-links"><h3>ELSEWHERE</h3><a href="https://github.com/shashankkumar8" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a><button type="button" id="openSemiFromFooter" style="display:flex;width:100%;align-items:center;justify-content:space-between;padding:10px 0;border:0;border-bottom:1px solid rgba(20,22,16,.13);background:transparent;text-align:left;font:500 clamp(15px,1.4vw,20px) var(--display);letter-spacing:-.03em;color:inherit">Meet Semi <span>✳</span></button><button type="button" id="copyProfile" style="display:flex;width:100%;align-items:center;justify-content:space-between;padding:10px 0;border:0;border-bottom:1px solid rgba(20,22,16,.13);background:transparent;text-align:left;font:500 clamp(15px,1.4vw,20px) var(--display);letter-spacing:-.03em;color:inherit">Copy profile link <span>⧉</span></button></div>
+          <div class="contact-links"><h3>ELSEWHERE</h3><a href="https://github.com/shashankkumar8" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a><a href="https://www.linkedin.com/in/shashank-kumar-2b574228b/" target="_blank" rel="noopener noreferrer">LinkedIn <span>↗</span></a><button type="button" id="openSemiFromFooter" style="display:flex;width:100%;align-items:center;justify-content:space-between;padding:10px 0;border:0;border-bottom:1px solid rgba(20,22,16,.13);background:transparent;text-align:left;font:500 clamp(15px,1.4vw,20px) var(--display);letter-spacing:-.03em;color:inherit">Meet Semi <span>✳</span></button><button type="button" id="copyProfile" style="display:flex;width:100%;align-items:center;justify-content:space-between;padding:10px 0;border:0;border-bottom:1px solid rgba(20,22,16,.13);background:transparent;text-align:left;font:500 clamp(15px,1.4vw,20px) var(--display);letter-spacing:-.03em;color:inherit">Copy profile link <span>⧉</span></button></div>
           <div class="machine-wrap"><span class="hand-note">take a little Semi ↘</span><div class="machine" id="machine"><div class="machine-label">SEMI CAPSULES<small>GOOD COMPANY · NO REFUNDS</small></div><div class="capsule-window" aria-hidden="true"><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i><i class="capsule"></i></div><div class="machine-controls"><div class="machine-knob" aria-hidden="true"></div><div class="machine-slot" aria-hidden="true"></div></div><div class="machine-door" aria-hidden="true"></div><div class="machine-stamp">A LITTLE DIFFERENT</div></div><div class="machine-count" id="capsuleCount">2 CAPSULES LEFT</div><button class="machine-cta" id="dispenseSemi" type="button">Dispense a Semi ↻</button></div>
         </div>
         <div class="footer-line"><span>© 2026 Shashank Kumar · Designed and built with curiosity.</span><button type="button" data-go="0">Back to home ↑</button></div>
@@ -646,12 +662,41 @@
     <div class="case-links" id="caseLinks"></div>
   </dialog>
 
+  <div class="pointer-cursor" id="pointerCursor" aria-hidden="true"><span class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></span><span class="cursor-core" id="cursorCore"></span></div>
+
   <script>
     (() => {
       'use strict';
       const $ = (selector, root=document) => root.querySelector(selector);
-      const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
-      const panels = $$('.panel');
+      const $ = (selector, root=document) => [...root.querySelectorAll(selector)];
+      const panels = $('.panel');
+
+      // A lagged ring + precise core give the pointer a tactile, purposeful presence.
+      const cursorUI=$('#pointerCursor'),cursorRing=$('#cursorRing'),cursorCore=$('#cursorCore'),cursorLabel=$('#cursorLabel');
+      const finePointer=window.matchMedia('(hover:hover) and (pointer:fine)');
+      let pointer={x:window.innerWidth/2,y:window.innerHeight/2},ringPoint={...pointer};
+      if(finePointer.matches){
+        document.documentElement.classList.add('has-custom-cursor');
+        const cursorTick=()=>{
+          ringPoint.x+=(pointer.x-ringPoint.x)*.18;ringPoint.y+=(pointer.y-ringPoint.y)*.18;
+          cursorRing.style.transform='translate3d('+ringPoint.x+'px,'+ringPoint.y+'px,0) translate3d(-50%,-50%,0)';
+          cursorCore.style.transform='translate3d('+pointer.x+'px,'+pointer.y+'px,0) translate3d(-50%,-50%,0)';
+          requestAnimationFrame(cursorTick);
+        };
+        requestAnimationFrame(cursorTick);
+        window.addEventListener('pointermove',event=>{
+          if(event.pointerType==='touch')return;
+          pointer.x=event.clientX;pointer.y=event.clientY;cursorUI.classList.add('visible');
+          const target=event.target.closest('a,button,[role="button"],.project-window,.index-row');
+          const isHot=!!target;
+          cursorUI.classList.toggle('hot',isHot);
+          cursorLabel.textContent=target&&target.id==='semiFloat'?'SEMI':target&&target.classList.contains('project-tab')?'SELECT':target&&target.classList.contains('index-row')?'OPEN':target&&target.id==='dispenseSemi'?'GET':target&&target.id==='openSemi'?'CUSTOM':isHot?'OPEN':'';
+        },{passive:true});
+        window.addEventListener('pointerdown',()=>cursorUI.classList.add('down'),{passive:true});
+        window.addEventListener('pointerup',()=>cursorUI.classList.remove('down'),{passive:true});
+        document.documentElement.addEventListener('pointerleave',()=>cursorUI.classList.remove('visible'));
+        document.documentElement.addEventListener('pointerenter',()=>cursorUI.classList.add('visible'));
+      }
       const track = $('#track');
       const viewport = $('#viewport');
       const wipe = $('#wipe');
@@ -685,6 +730,7 @@
         $('#prevPanel').disabled=active===0;
         $('#nextPanel').disabled=active===panels.length-1;
         $('#semiFloat').classList.toggle('hidden',active===7);
+        if(active===7){clearSemiFollow();semiPosition=null;}
         panels.forEach((panel,i)=>{
           const isActive=i===active;
           panel.setAttribute('aria-hidden',String(!isActive));
@@ -796,24 +842,49 @@
       }
       syncSemi();
       const semiDialog=$('#semiDialog');
-      function openSemi(){if(!semiDialog.open)semiDialog.show();document.body.classList.add('semi-open');$('#closeSemi').focus();}
+      function openSemi(){clearSemiFollow();semiPosition=null;if(!semiDialog.open)semiDialog.show();document.body.classList.add('semi-open');$('#closeSemi').focus();}
       $('#openSemi').addEventListener('click',openSemi);$('#semiFloat').addEventListener('click',openSemi);$('#openSemiFromFooter').addEventListener('click',openSemi);
-      $('#closeSemi').addEventListener('click',()=>semiDialog.close());semiDialog.addEventListener('close',()=>document.body.classList.remove('semi-open'));
+      $('#closeSemi').addEventListener('click',()=>semiDialog.close());semiDialog.addEventListener('close',()=>{document.body.classList.remove('semi-open');semiTarget=null;});
       semiDialog.addEventListener('click',event=>{if(event.target===semiDialog)semiDialog.close();});
-      $('#semiFollow').addEventListener('click',()=>{semi.follow=!semi.follow;syncSemi();});
+      $('#semiFollow').addEventListener('click',()=>{semi.follow=!semi.follow;if(!semi.follow){clearSemiFollow();semiPosition=null;semiTarget=null;}syncSemi();});
       $$('[data-setting]').forEach(group=>group.addEventListener('click',event=>{const btn=event.target.closest('.choice');if(!btn)return;const key=group.dataset.setting;semi[key]=btn.dataset.value;syncSemi();}));
       $('#surpriseSemi').addEventListener('click',()=>{
         const keys=Object.keys(palette),shapes=['round','clover','flower','square'],materials=['fabric','glass','glow','plastic'],moods=['idle','working','sleeping','surprise'];
         semi.shape=shapes[Math.floor(Math.random()*shapes.length)];semi.material=materials[Math.floor(Math.random()*materials.length)];semi.colour=keys[Math.floor(Math.random()*keys.length)];semi.mood=moods[Math.floor(Math.random()*moods.length)];syncSemi();
       });
       $('#resetSemi').addEventListener('click',()=>{semi={...defaults};syncSemi();});
-      // Follow pointer gently; the effect is disabled for touch or when the visitor switches it off.
-      let lastPointer=0;
+      // Semi floats toward the pointer with a soft spring and stays offset from the cursor.
+      const semiFloat=$('#semiFloat');
+      let semiTarget=null,semiPosition=null;
+      function clearSemiFollow(){
+        semiTarget=null;
+        semiFloat.classList.remove('is-following');
+        semiFloat.style.left='';semiFloat.style.top='';
+      }
       window.addEventListener('pointermove',event=>{
-        if(!semi.follow||event.pointerType==='touch'||active===7)return;
-        const el=$('#semiFloat');const dx=(event.clientX/window.innerWidth-.5)*12;const dy=(event.clientY/window.innerHeight-.5)*10;
-        el.style.marginRight=`${-dx}px`;el.style.marginBottom=`${-dy}px`;lastPointer=Date.now();
+        if(event.pointerType==='touch'||!semi.follow||active===7||semiDialog.open)return;
+        const w=semiFloat.offsetWidth||58,h=semiFloat.offsetHeight||68,margin=26;
+        let x=event.clientX+76,y=event.clientY+44;
+        if(x+w/2>window.innerWidth-margin)x=event.clientX-76;
+        if(y+h/2>window.innerHeight-margin)y=event.clientY-78;
+        x=Math.max(w/2+margin,Math.min(window.innerWidth-w/2-margin,x));
+        y=Math.max(h/2+margin,Math.min(window.innerHeight-h/2-margin,y));
+        semiTarget={x,y};
       },{passive:true});
+      window.addEventListener('pointerleave',()=>{semiTarget=null;},{passive:true});
+      function animateSemiFollow(){
+        if(semi.follow&&active!==7&&!semiDialog.open&&semiTarget){
+          if(!semiPosition)semiPosition={...semiTarget};
+          semiPosition.x+=(semiTarget.x-semiPosition.x)*.14;
+          semiPosition.y+=(semiTarget.y-semiPosition.y)*.14;
+          semiFloat.classList.add('is-following');
+          semiFloat.style.left=semiPosition.x+'px';semiFloat.style.top=semiPosition.y+'px';
+        }else if(semiFloat.classList.contains('is-following')){
+          clearSemiFollow();semiPosition=null;
+        }
+        requestAnimationFrame(animateSemiFollow);
+      }
+      requestAnimationFrame(animateSemiFollow);
       $('#dispenseSemi').addEventListener('click',()=>{
         const machine=$('#machine');machine.classList.remove('dispense');void machine.offsetWidth;machine.classList.add('dispense');
         const keys=Object.keys(palette),shapes=['round','clover','flower','square'];
