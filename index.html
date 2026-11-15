@@ -853,16 +853,23 @@
         semi.shape=shapes[Math.floor(Math.random()*shapes.length)];semi.material=materials[Math.floor(Math.random()*materials.length)];semi.colour=keys[Math.floor(Math.random()*keys.length)];semi.mood=moods[Math.floor(Math.random()*moods.length)];syncSemi();
       });
       $('#resetSemi').addEventListener('click',()=>{semi={...defaults};syncSemi();});
-      // Semi floats toward the pointer with a soft spring and stays offset from the cursor.
+      // Semi floats toward the pointer with a soft spring, and freezes when the visitor hovers it.
       const semiFloat=$('#semiFloat');
-      let semiTarget=null,semiPosition=null;
+      let semiTarget=null,semiPosition=null,semiFollowFrame=0;
       function clearSemiFollow(){
         semiTarget=null;
         semiFloat.classList.remove('is-following');
         semiFloat.style.left='';semiFloat.style.top='';
       }
+      function requestSemiFollow(){
+        if(!semiFollowFrame)semiFollowFrame=requestAnimationFrame(animateSemiFollow);
+      }
       window.addEventListener('pointermove',event=>{
         if(event.pointerType==='touch'||!semi.follow||active===7||semiDialog.open)return;
+        if(event.target.closest&&event.target.closest('#semiFloat')){
+          if(semiPosition){semiTarget={...semiPosition};requestSemiFollow();}
+          return;
+        }
         const w=semiFloat.offsetWidth||58,h=semiFloat.offsetHeight||68,margin=26;
         let x=event.clientX+76,y=event.clientY+44;
         if(x+w/2>window.innerWidth-margin)x=event.clientX-76;
@@ -870,21 +877,22 @@
         x=Math.max(w/2+margin,Math.min(window.innerWidth-w/2-margin,x));
         y=Math.max(h/2+margin,Math.min(window.innerHeight-h/2-margin,y));
         semiTarget={x,y};
+        requestSemiFollow();
       },{passive:true});
-      window.addEventListener('pointerleave',()=>{semiTarget=null;},{passive:true});
+      window.addEventListener('pointerleave',()=>{semiTarget=null;requestSemiFollow();},{passive:true});
       function animateSemiFollow(){
+        semiFollowFrame=0;
         if(semi.follow&&active!==7&&!semiDialog.open&&semiTarget){
           if(!semiPosition)semiPosition={...semiTarget};
           semiPosition.x+=(semiTarget.x-semiPosition.x)*.14;
           semiPosition.y+=(semiTarget.y-semiPosition.y)*.14;
           semiFloat.classList.add('is-following');
           semiFloat.style.left=semiPosition.x+'px';semiFloat.style.top=semiPosition.y+'px';
+          if(Math.abs(semiTarget.x-semiPosition.x)>.45||Math.abs(semiTarget.y-semiPosition.y)>.45)requestSemiFollow();
         }else if(semiFloat.classList.contains('is-following')){
           clearSemiFollow();semiPosition=null;
         }
-        requestAnimationFrame(animateSemiFollow);
       }
-      requestAnimationFrame(animateSemiFollow);
       $('#dispenseSemi').addEventListener('click',()=>{
         const machine=$('#machine');machine.classList.remove('dispense');void machine.offsetWidth;machine.classList.add('dispense');
         const keys=Object.keys(palette),shapes=['round','clover','flower','square'];
