@@ -671,7 +671,7 @@
       'use strict';
       const $ = (selector, root=document) => root.querySelector(selector);
       const all = (selector, root=document) => [...root.querySelectorAll(selector)];
-      const panels = $('.panel');
+      const panels = all('.panel');
 
       // Custom arrow is positioned as a small fixed element, so it remains visible above every panel.
       const cursorUI=$('#pointerCursor');
